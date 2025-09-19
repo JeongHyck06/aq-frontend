@@ -2,7 +2,6 @@
 import {
     UserManager,
     WebStorageStateStore,
-    Log,
     UserManagerSettings,
 } from 'oidc-client-ts';
 

@@ -3,8 +3,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 
+interface UserData {
+    email: string;
+    nickname: string;
+    [key: string]: unknown;
+}
+
 export default function HomePage() {
-    const [me, setMe] = useState<any>(null);
+    const [me, setMe] = useState<UserData | null>(null);
     const [err, setErr] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -42,8 +48,12 @@ export default function HomePage() {
 
             const body = await res.json();
             setMe(body);
-        } catch (e: any) {
-            setErr(e.message);
+        } catch (e: unknown) {
+            setErr(
+                e instanceof Error
+                    ? e.message
+                    : '알 수 없는 오류가 발생했습니다.'
+            );
             setMe(null);
         } finally {
             setIsLoading(false);
