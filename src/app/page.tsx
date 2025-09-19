@@ -19,9 +19,10 @@ export default function HomePage() {
         setErr(null);
 
         try {
-            const token = typeof window !== 'undefined' 
-                ? localStorage.getItem('accessToken')
-                : null;
+            const token =
+                typeof window !== 'undefined'
+                    ? localStorage.getItem('accessToken')
+                    : null;
             if (!token) {
                 setErr(
                     '로그인 토큰이 없습니다. 먼저 로그인해주세요.'

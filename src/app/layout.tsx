@@ -31,9 +31,10 @@ export default function RootLayout({
 
     useEffect(() => {
         const fetchMyInfo = async () => {
-            const accessToken = typeof window !== 'undefined'
-                ? localStorage.getItem('accessToken')
-                : null;
+            const accessToken =
+                typeof window !== 'undefined'
+                    ? localStorage.getItem('accessToken')
+                    : null;
             if (!accessToken) {
                 setIsLoading(false);
                 return;
@@ -55,8 +56,12 @@ export default function RootLayout({
                 } else {
                     setUserInfo(null);
                     if (typeof window !== 'undefined') {
-                        localStorage.removeItem('accessToken');
-                        localStorage.removeItem('refreshToken');
+                        localStorage.removeItem(
+                            'accessToken'
+                        );
+                        localStorage.removeItem(
+                            'refreshToken'
+                        );
                     }
                 }
             } catch (error) {
