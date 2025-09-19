@@ -41,7 +41,7 @@ export default function RootLayout({
 
             try {
                 const res = await fetch(
-                    'http://localhost:8080/auth/me',
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`,
                     {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
