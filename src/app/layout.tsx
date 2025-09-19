@@ -31,8 +31,9 @@ export default function RootLayout({
 
     useEffect(() => {
         const fetchMyInfo = async () => {
-            const accessToken =
-                localStorage.getItem('accessToken');
+            const accessToken = typeof window !== 'undefined'
+                ? localStorage.getItem('accessToken')
+                : null;
             if (!accessToken) {
                 setIsLoading(false);
                 return;
@@ -53,8 +54,10 @@ export default function RootLayout({
                     setUserInfo(data);
                 } else {
                     setUserInfo(null);
-                    localStorage.removeItem('accessToken');
-                    localStorage.removeItem('refreshToken');
+                    if (typeof window !== 'undefined') {
+                        localStorage.removeItem('accessToken');
+                        localStorage.removeItem('refreshToken');
+                    }
                 }
             } catch (error) {
                 console.error('내 정보 조회 실패:', error);
@@ -68,8 +71,10 @@ export default function RootLayout({
     }, []);
 
     const handleLogout = () => {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+        }
         setUserInfo(null);
         window.location.href = '/';
     };

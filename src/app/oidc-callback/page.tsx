@@ -46,14 +46,16 @@ export default function OidcCallbackPage() {
                 ) {
                     const { accessToken, refreshToken } =
                         responseData.data;
-                    localStorage.setItem(
-                        'accessToken',
-                        accessToken
-                    );
-                    localStorage.setItem(
-                        'refreshToken',
-                        refreshToken
-                    );
+                    if (typeof window !== 'undefined') {
+                        localStorage.setItem(
+                            'accessToken',
+                            accessToken
+                        );
+                        localStorage.setItem(
+                            'refreshToken',
+                            refreshToken
+                        );
+                    }
 
                     window.location.href = '/';
                 } else {
