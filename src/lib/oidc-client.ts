@@ -17,7 +17,7 @@ function createOidcConfig(): UserManagerSettings {
             scope: '',
             post_logout_redirect_uri: '',
             userStore: new WebStorageStateStore({
-                store: window?.localStorage,
+                store: {} as Storage,
             }),
         };
     }
