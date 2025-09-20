@@ -47,7 +47,7 @@ export default function RootLayout({
                         'localhost'
                     )
                         ? 'http://localhost:8080'
-                        : 'https://13.209.3.82:8443'); // 배포 환경에서는 HTTPS 사용
+                        : 'http://13.209.3.82:8080'); // 임시로 HTTP 사용
                 const res = await fetch(
                     `${backendUrl}/auth/me`,
                     {

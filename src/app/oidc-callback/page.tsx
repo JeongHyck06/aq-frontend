@@ -21,14 +21,14 @@ export default function OidcCallbackPage() {
                     );
                 }
 
-                // 백엔드 URL 설정 (배포 환경 고려)
+                // 백엔드 URL 설정 (임시로 HTTP 사용)
                 const backendUrl =
                     process.env.NEXT_PUBLIC_BACKEND_URL ||
                     (window.location.origin.includes(
                         'localhost'
                     )
                         ? 'http://localhost:8080'
-                        : 'https://13.209.3.82:8443'); // 배포 환경에서는 HTTPS 사용
+                        : 'http://13.209.3.82:8080'); // 임시로 HTTP 사용
 
                 console.log('🔗 백엔드 URL:', {
                     backendUrl,
