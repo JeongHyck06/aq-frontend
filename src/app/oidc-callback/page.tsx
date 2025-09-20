@@ -21,10 +21,17 @@ export default function OidcCallbackPage() {
                     );
                 }
 
-                // 백엔드 URL 설정 (환경에 따라)
+                // 백엔드 URL 설정 (단순화)
                 const backendUrl =
                     process.env.NEXT_PUBLIC_BACKEND_URL ||
                     'http://localhost:8080';
+
+                console.log('🚀 백엔드 로그인 요청 시작:', {
+                    url: `${backendUrl}/auth/login`,
+                    hasIdToken: !!user.id_token,
+                    idTokenLength:
+                        user.id_token?.length || 0,
+                });
 
                 const res = await fetch(
                     `${backendUrl}/auth/login`,
@@ -35,11 +42,26 @@ export default function OidcCallbackPage() {
                                 'application/json',
                             id_token: user.id_token,
                         },
+                        mode: 'cors', // CORS 모드 명시
                     }
                 );
 
+                console.log('📡 백엔드 응답 상태:', {
+                    status: res.status,
+                    statusText: res.statusText,
+                    ok: res.ok,
+                    headers: Object.fromEntries(
+                        res.headers.entries()
+                    ),
+                });
+
                 if (!res.ok) {
                     const errorBody = await res.text();
+                    console.error('백엔드 오류 응답:', {
+                        status: res.status,
+                        statusText: res.statusText,
+                        errorBody,
+                    });
                     throw new Error(
                         `백엔드 로그인 실패: ${res.status} - ${errorBody}`
                     );
@@ -74,8 +96,39 @@ export default function OidcCallbackPage() {
             } catch (error) {
                 console.error(
                     'OIDC 콜백 처리 중 오류 발생:',
-                    error
+                    {
+                        error:
+                            error instanceof Error
+                                ? error.message
+                                : error,
+                        stack:
+                            error instanceof Error
+                                ? error.stack
+                                : undefined,
+                        backendUrl:
+                            process.env
+                                .NEXT_PUBLIC_BACKEND_URL ||
+                            'http://localhost:8080',
+                        currentUrl: window.location.href,
+                        userAgent: navigator.userAgent,
+                    }
                 );
+
+                // Mixed Content 오류 특별 처리
+                if (
+                    error instanceof Error &&
+                    (error.message.includes(
+                        'Mixed Content'
+                    ) ||
+                        error.message.includes(
+                            'Failed to fetch'
+                        ))
+                ) {
+                    console.error(
+                        '🔒 Mixed Content 오류 감지 - HTTPS 백엔드 필요'
+                    );
+                }
+
                 router.replace(
                     '/login?error=callback_failed'
                 );

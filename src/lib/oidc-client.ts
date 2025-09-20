@@ -58,7 +58,7 @@ function createOidcConfig(): UserManagerSettings {
             environment = 'production';
         }
 
-        console.log('🌐 OIDC 환경 감지:', {
+        console.log('OIDC 환경 감지:', {
             environment,
             frontendUrl,
             currentOrigin,
@@ -74,7 +74,7 @@ function createOidcConfig(): UserManagerSettings {
             vercelEnv: process.env.VERCEL,
         });
 
-        console.log('🔑 OIDC 설정 요약:', {
+        console.log('OIDC 설정 요약:', {
             authority: 'https://kauth.kakao.com',
             clientId: process.env.NEXT_PUBLIC_KAKAO_APP_KEY
                 ? '설정됨'
