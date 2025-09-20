@@ -2,6 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import {
+    getBackendUrl,
+    getAccessToken,
+    getAuthHeaders,
+} from '@/lib/api-config';
 
 interface UserData {
     email: string;
@@ -19,10 +24,7 @@ export default function HomePage() {
         setErr(null);
 
         try {
-            const token =
-                typeof window !== 'undefined'
-                    ? localStorage.getItem('accessToken')
-                    : null;
+            const token = getAccessToken();
 
             if (!token) {
                 setErr(
@@ -33,12 +35,10 @@ export default function HomePage() {
             }
 
             const res = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/me`,
+                `${getBackendUrl()}/auth/me`,
                 {
                     method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+                    headers: getAuthHeaders(token),
                 }
             );
 

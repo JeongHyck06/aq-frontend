@@ -4,6 +4,12 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import {
+    getBackendUrl,
+    getAccessToken,
+    getAuthHeaders,
+    clearTokens,
+} from '@/lib/api-config';
 
 const geistSans = Geist({
     variable: '--font-geist-sans',
@@ -31,29 +37,18 @@ export default function RootLayout({
 
     useEffect(() => {
         const fetchMyInfo = async () => {
-            const accessToken =
-                typeof window !== 'undefined'
-                    ? localStorage.getItem('accessToken')
-                    : null;
+            const accessToken = getAccessToken();
             if (!accessToken) {
                 setIsLoading(false);
                 return;
             }
 
             try {
-                const backendUrl =
-                    process.env.NEXT_PUBLIC_BACKEND_URL ||
-                    (window.location.origin.includes(
-                        'localhost'
-                    )
-                        ? 'http://localhost:8080'
-                        : 'http://13.209.3.82:8080'); // 임시로 HTTP 사용
                 const res = await fetch(
-                    `${backendUrl}/auth/me`,
+                    `${getBackendUrl()}/auth/me`,
                     {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
+                        headers:
+                            getAuthHeaders(accessToken),
                     }
                 );
 
@@ -62,14 +57,7 @@ export default function RootLayout({
                     setUserInfo(data);
                 } else {
                     setUserInfo(null);
-                    if (typeof window !== 'undefined') {
-                        localStorage.removeItem(
-                            'accessToken'
-                        );
-                        localStorage.removeItem(
-                            'refreshToken'
-                        );
-                    }
+                    clearTokens();
                 }
             } catch (error) {
                 console.error('내 정보 조회 실패:', error);
@@ -83,10 +71,7 @@ export default function RootLayout({
     }, []);
 
     const handleLogout = () => {
-        if (typeof window !== 'undefined') {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-        }
+        clearTokens();
         setUserInfo(null);
         window.location.href = '/';
     };

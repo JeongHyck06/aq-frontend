@@ -3,32 +3,11 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getUserManager } from '@/lib/oidc-client';
+import {
+    getBackendUrl,
+    saveTokens,
+} from '@/lib/api-config';
 import type { User } from 'oidc-client-ts';
-
-// 백엔드 URL을 안전하게 결정하는 함수
-function getBackendUrl(): string {
-    // 환경 변수가 설정된 경우 우선 사용
-    if (process.env.NEXT_PUBLIC_BACKEND_URL) {
-        return process.env.NEXT_PUBLIC_BACKEND_URL;
-    }
-
-    // 클라이언트 사이드에서만 실행
-    if (typeof window === 'undefined') {
-        return 'http://localhost:8080';
-    }
-
-    const currentOrigin = window.location.origin;
-    const isLocalhost =
-        currentOrigin.includes('localhost') ||
-        currentOrigin.includes('127.0.0.1');
-
-    if (isLocalhost) {
-        return 'http://localhost:8080';
-    }
-
-    // 프로덕션 환경에서는 HTTPS 강제 (8443 포트 사용)
-    return 'https://13.209.3.82:8443';
-}
 
 export default function OidcCallbackPage() {
     const router = useRouter();
@@ -49,13 +28,20 @@ export default function OidcCallbackPage() {
                 // 백엔드 URL 설정
                 const backendUrl = getBackendUrl();
 
-                console.log('🔗 백엔드 URL:', {
+                console.log('🔗 백엔드 URL 상세 정보:', {
                     backendUrl,
                     envVar:
                         process.env
                             .NEXT_PUBLIC_BACKEND_URL ||
                         '설정안됨',
                     currentOrigin: window.location.origin,
+                    protocol: backendUrl.startsWith('https')
+                        ? 'HTTPS'
+                        : backendUrl.startsWith('http')
+                        ? 'HTTP'
+                        : 'UNKNOWN',
+                    isSecureContext: window.isSecureContext,
+                    location: window.location.href,
                 });
 
                 console.log('🚀 백엔드 로그인 요청 시작:', {
@@ -107,17 +93,8 @@ export default function OidcCallbackPage() {
                 ) {
                     const { accessToken, refreshToken } =
                         responseData.data;
-                    if (typeof window !== 'undefined') {
-                        localStorage.setItem(
-                            'accessToken',
-                            accessToken
-                        );
-                        localStorage.setItem(
-                            'refreshToken',
-                            refreshToken
-                        );
-                    }
 
+                    saveTokens(accessToken, refreshToken);
                     window.location.href = '/';
                 } else {
                     throw new Error(
