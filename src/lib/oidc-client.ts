@@ -27,7 +27,7 @@ function createOidcConfig(): UserManagerSettings {
             process.env.NEXT_PUBLIC_FRONTEND_URL;
         const currentOrigin = window.location.origin;
 
-        // 다양한 방법으로 환경 감지
+        // 환경 감지
         const isLocalhost =
             currentOrigin.includes('localhost') ||
             currentOrigin.includes('127.0.0.1');
@@ -35,16 +35,16 @@ function createOidcConfig(): UserManagerSettings {
             currentOrigin.includes('vercel.app');
         const isProduction =
             process.env.NODE_ENV === 'production';
-        const isVercelEnv = process.env.VERCEL === '1'; // Vercel에서 자동 설정
 
         let redirectUri;
+
+        // 우선순위: 환경변수 > 현재 origin (HTTPS 강제)
         if (frontendUrl) {
+            // 환경변수가 설정된 경우 사용
             redirectUri = `${frontendUrl}/oidc-callback`;
-        } else if (isVercelDeployment) {
-            // Vercel 배포 환경에서 환경변수가 없는 경우 현재 origin 사용
-            redirectUri = `${currentOrigin}/oidc-callback`;
         } else {
-            // 로컬 개발 환경
+            // 환경변수가 없는 경우 현재 origin 사용
+            // Vercel에서는 자동으로 HTTPS가 적용됨
             redirectUri = `${currentOrigin}/oidc-callback`;
         }
 
@@ -52,25 +52,35 @@ function createOidcConfig(): UserManagerSettings {
         let environment = 'unknown';
         if (isLocalhost) {
             environment = 'local';
-        } else if (isVercelDeployment || isVercelEnv) {
+        } else if (isVercelDeployment) {
             environment = 'vercel';
         } else if (isProduction) {
             environment = 'production';
         }
 
-        console.log('OIDC 환경 감지:', {
+        console.log('🌐 OIDC 환경 감지:', {
             environment,
             frontendUrl,
             currentOrigin,
             isLocalhost,
             isVercelDeployment,
             isProduction,
-            isVercelEnv,
             redirectUri,
             kakaoAppKey: process.env
                 .NEXT_PUBLIC_KAKAO_APP_KEY
                 ? '설정됨'
                 : '설정안됨',
+            nodeEnv: process.env.NODE_ENV,
+            vercelEnv: process.env.VERCEL,
+        });
+
+        console.log('🔑 OIDC 설정 요약:', {
+            authority: 'https://kauth.kakao.com',
+            clientId: process.env.NEXT_PUBLIC_KAKAO_APP_KEY
+                ? '설정됨'
+                : '설정안됨',
+            redirectUri,
+            scope: 'openid account_email profile_nickname profile_image',
         });
 
         return redirectUri;
@@ -99,8 +109,10 @@ function createOidcConfig(): UserManagerSettings {
 
 export function getUserManager(): UserManager {
     if (!userManager) {
+        console.log('🔧 OIDC UserManager 초기화 시작...');
         const settings = createOidcConfig();
         userManager = new UserManager(settings);
+        console.log('OIDC UserManager 초기화 완료');
 
         userManager.events.addAccessTokenExpiring(() => {
             console.warn('access token expiring');

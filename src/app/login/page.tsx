@@ -1,11 +1,17 @@
 'use client';
 
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { getUserManager } from '@/lib/oidc-client';
 import Image from 'next/image';
 
 export default function LoginPage() {
     const mgr = getUserManager();
+
+    // 페이지 로드 시 환경 감지 로그 출력
+    useEffect(() => {
+        console.log('로그인 페이지가 로드되었습니다.');
+        // getUserManager 호출로 OIDC 설정이 초기화되고 환경 감지 로그가 출력됩니다.
+    }, []);
 
     const handleLogin = useCallback(() => {
         mgr.signinRedirect();
@@ -19,7 +25,7 @@ export default function LoginPage() {
             <div className="w-full max-w-md p-10 space-y-8 bg-white border border-gray-200 rounded-2xl shadow-lg text-center">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                        NEXUS
+                        AQ
                     </h1>
                     <p className="text-gray-600">
                         카카오 계정으로 간편하게
