@@ -21,11 +21,18 @@ export default function OidcCallbackPage() {
                     );
                 }
 
+                // 백엔드 URL 설정 (환경에 따라)
+                const backendUrl =
+                    process.env.NEXT_PUBLIC_BACKEND_URL ||
+                    'http://localhost:8080';
+
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/login`,
+                    `${backendUrl}/auth/login`,
                     {
                         method: 'POST',
                         headers: {
+                            'Content-Type':
+                                'application/json',
                             id_token: user.id_token,
                         },
                     }

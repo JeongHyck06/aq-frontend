@@ -23,6 +23,7 @@ export default function HomePage() {
                 typeof window !== 'undefined'
                     ? localStorage.getItem('accessToken')
                     : null;
+
             if (!token) {
                 setErr(
                     '로그인 토큰이 없습니다. 먼저 로그인해주세요.'
