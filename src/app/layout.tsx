@@ -43,7 +43,11 @@ export default function RootLayout({
             try {
                 const backendUrl =
                     process.env.NEXT_PUBLIC_BACKEND_URL ||
-                    'http://localhost:8080';
+                    (window.location.origin.includes(
+                        'localhost'
+                    )
+                        ? 'http://localhost:8080'
+                        : 'https://13.209.3.82:8443'); // 배포 환경에서는 HTTPS 사용
                 const res = await fetch(
                     `${backendUrl}/auth/me`,
                     {

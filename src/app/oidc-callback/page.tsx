@@ -21,10 +21,23 @@ export default function OidcCallbackPage() {
                     );
                 }
 
-                // 백엔드 URL 설정 (단순화)
+                // 백엔드 URL 설정 (배포 환경 고려)
                 const backendUrl =
                     process.env.NEXT_PUBLIC_BACKEND_URL ||
-                    'http://localhost:8080';
+                    (window.location.origin.includes(
+                        'localhost'
+                    )
+                        ? 'http://localhost:8080'
+                        : 'https://13.209.3.82:8443'); // 배포 환경에서는 HTTPS 사용
+
+                console.log('🔗 백엔드 URL:', {
+                    backendUrl,
+                    envVar:
+                        process.env
+                            .NEXT_PUBLIC_BACKEND_URL ||
+                        '설정안됨',
+                    currentOrigin: window.location.origin,
+                });
 
                 console.log('🚀 백엔드 로그인 요청 시작:', {
                     url: `${backendUrl}/auth/login`,
