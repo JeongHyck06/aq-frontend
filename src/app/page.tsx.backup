@@ -1,0 +1,396 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { Layout } from '@/components/layout/Layout';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
+import { Avatar } from '@/components/ui/Avatar';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { FadeIn, StaggerContainer, HoverCard } from '@/components/animations';
+import { useContentStore } from '@/store/content';
+import { useAuthStore } from '@/store/auth';
+import { 
+  TrendingUp, 
+  Star, 
+  Eye, 
+  Heart, 
+  MessageSquare, 
+  BookOpen,
+  Cpu,
+  ArrowRight,
+  Search,
+  Filter
+} from 'lucide-react';
+import { formatRelativeTime, formatNumber } from '@/utils/format';
+import Link from 'next/link';
+
+export default function HomePage() {
+  const { 
+    reviews, 
+    recipes, 
+    models, 
+    fetchReviews, 
+    fetchRecipes, 
+    fetchModels,
+    reviewsLoading,
+    recipesLoading,
+    modelsLoading
+  } = useContentStore();
+  
+  const { isAuthenticated } = useAuthStore();
+  const [activeTab, setActiveTab] = useState<'reviews' | 'recipes' | 'models'>('reviews');
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          fetchReviews({ size: 6, sort: 'createdAt,desc' }),
+          fetchRecipes({ size: 6, sort: 'createdAt,desc' }),
+          fetchModels({ size: 6 })
+        ]);
+      } catch (error) {
+        console.error('Failed to load data:', error);
+      }
+    };
+
+    loadData();
+  }, [fetchReviews, fetchRecipes, fetchModels]);
+
+  const tabs = [
+    { id: 'reviews', label: '최신 리뷰', icon: MessageSquare },
+    { id: 'recipes', label: '인기 레시피', icon: BookOpen },
+    { id: 'models', label: '추천 모델', icon: Cpu },
+  ];
+
+  const renderReviews = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {reviewsLoading ? (
+        Array.from({ length: 6 }).map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader>
+              <div className="h-4 bg-secondary-200 rounded w-3/4"></div>
+              <div className="h-3 bg-secondary-200 rounded w-1/2"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="h-3 bg-secondary-200 rounded"></div>
+                <div className="h-3 bg-secondary-200 rounded w-5/6"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        reviews.slice(0, 6).map((review) => (
+          <HoverCard key={review.id}>
+            <Card>
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-lg line-clamp-2">
+                    {review.title}
+                  </CardTitle>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Badge variant="outline">{review.modelName}</Badge>
+                    <div className="flex items-center space-x-1">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-4 w-4 ${
+                            i < review.rating ? 'text-warning-400 fill-current' : 'text-secondary-300'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-secondary-600 line-clamp-3 mb-4">
+                {review.content}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4 text-sm text-secondary-500">
+                  <div className="flex items-center space-x-1">
+                    <Eye className="h-4 w-4" />
+                    <span>{formatNumber(review.viewCount)}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Heart className="h-4 w-4" />
+                    <span>{formatNumber(review.likeCount)}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>{formatNumber(review.commentCount)}</span>
+                  </div>
+                </div>
+                <Link href={`/reviews/${review.id}`}>
+                  <Button variant="ghost" size="sm">
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      }
+    </div>
+  );
+
+  const renderRecipes = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {recipesLoading ? (
+        Array.from({ length: 6 }).map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader>
+              <div className="h-4 bg-secondary-200 rounded w-3/4"></div>
+              <div className="h-3 bg-secondary-200 rounded w-1/2"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="h-3 bg-secondary-200 rounded"></div>
+                <div className="h-3 bg-secondary-200 rounded w-5/6"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        recipes.slice(0, 6).map((recipe) => (
+          <Card key={recipe.id} className="hover:shadow-medium transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-lg line-clamp-2">
+                    {recipe.title}
+                  </CardTitle>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Badge variant="secondary">{recipe.category}</Badge>
+                    {recipe.recommendedModelName && (
+                      <Badge variant="outline">{recipe.recommendedModelName}</Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-secondary-600 line-clamp-3 mb-4">
+                {recipe.description}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4 text-sm text-secondary-500">
+                  <div className="flex items-center space-x-1">
+                    <Eye className="h-4 w-4" />
+                    <span>{formatNumber(recipe.viewCount)}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <Heart className="h-4 w-4" />
+                    <span>{formatNumber(recipe.likeCount)}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <TrendingUp className="h-4 w-4" />
+                    <span>{formatNumber(recipe.usageCount)}</span>
+                  </div>
+                </div>
+                <Link href={`/recipes/${recipe.id}`}>
+                  <Button variant="ghost" size="sm">
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      )}
+    </div>
+  );
+
+  const renderModels = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {modelsLoading ? (
+        Array.from({ length: 6 }).map((_, i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader>
+              <div className="h-4 bg-secondary-200 rounded w-3/4"></div>
+              <div className="h-3 bg-secondary-200 rounded w-1/2"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="h-3 bg-secondary-200 rounded"></div>
+                <div className="h-3 bg-secondary-200 rounded w-5/6"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      ) : (
+        models.slice(0, 6).map((model) => (
+          <Card key={model.id} className="hover:shadow-medium transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <CardTitle className="text-lg">
+                    {model.name}
+                  </CardTitle>
+                  <div className="flex items-center space-x-2 mt-2">
+                    <Badge variant="outline">{model.provider}</Badge>
+                    <Badge variant="secondary">{model.category}</Badge>
+                    {model.hasFreeTier && (
+                      <Badge variant="success">무료 체험</Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-secondary-600 line-clamp-3 mb-4">
+                {model.description}
+              </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4 text-sm text-secondary-500">
+                  <div className="flex items-center space-x-1">
+                    <Star className="h-4 w-4" />
+                    <span>{model.averageRating?.toFixed(1) || 'N/A'}</span>
+                  </div>
+                  <div className="flex items-center space-x-1">
+                    <MessageSquare className="h-4 w-4" />
+                    <span>{formatNumber(model.reviewCount)}</span>
+                  </div>
+                </div>
+                <Link href={`/models/${model.id}`}>
+                  <Button variant="ghost" size="sm">
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        ))
+      )}
+    </div>
+  );
+
+  return (
+    <Layout>
+      <div className="container py-8">
+        {/* Hero Section */}
+        <FadeIn direction="up" delay={0.2}>
+          <div className="text-center mb-12">
+            <h1 className="text-4xl md:text-6xl font-bold text-gradient mb-6">
+              AI 모델 비교 및 프롬프트 공유
+            </h1>
+            <p className="text-xl text-secondary-600 mb-8 max-w-3xl mx-auto">
+              다양한 AI 모델의 리뷰를 확인하고, 프롬프트 레시피를 공유하며, 
+              최적의 AI 모델을 찾아보세요.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/reviews">
+                <Button size="lg" className="w-full sm:w-auto">
+                  <MessageSquare className="h-5 w-5 mr-2" />
+                  리뷰 둘러보기
+                </Button>
+              </Link>
+              <Link href="/recipes">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  <BookOpen className="h-5 w-5 mr-2" />
+                  레시피 탐색
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </FadeIn>
+
+        {/* Stats */}
+        <StaggerContainer className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+          <HoverCard>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-3xl font-bold text-primary-600 mb-2">
+                  {formatNumber(1234)}
+                </div>
+                <div className="text-secondary-600">총 리뷰</div>
+              </CardContent>
+            </Card>
+          </HoverCard>
+          <HoverCard>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-3xl font-bold text-accent-600 mb-2">
+                  {formatNumber(567)}
+                </div>
+                <div className="text-secondary-600">프롬프트 레시피</div>
+              </CardContent>
+            </Card>
+          </HoverCard>
+          <HoverCard>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-3xl font-bold text-success-600 mb-2">
+                  {formatNumber(89)}
+                </div>
+                <div className="text-secondary-600">AI 모델</div>
+              </CardContent>
+            </Card>
+          </HoverCard>
+          <HoverCard>
+            <Card className="text-center">
+              <CardContent className="pt-6">
+                <div className="text-3xl font-bold text-warning-600 mb-2">
+                  {formatNumber(2345)}
+                </div>
+                <div className="text-secondary-600">활성 사용자</div>
+              </CardContent>
+            </Card>
+          </HoverCard>
+        </StaggerContainer>
+
+        {/* Content Tabs */}
+        <div className="mb-8">
+          <div className="flex flex-wrap gap-2 mb-6">
+            {tabs.map((tab) => (
+              <Button
+                key={tab.id}
+                variant={activeTab === tab.id ? 'primary' : 'ghost'}
+                onClick={() => setActiveTab(tab.id as any)}
+                className="flex items-center space-x-2"
+              >
+                <tab.icon className="h-4 w-4" />
+                <span>{tab.label}</span>
+              </Button>
+            ))}
+          </div>
+
+          {activeTab === 'reviews' && renderReviews()}
+          {activeTab === 'recipes' && renderRecipes()}
+          {activeTab === 'models' && renderModels()}
+        </div>
+
+        {/* CTA Section */}
+        {!isAuthenticated && (
+          <FadeIn direction="up" delay={0.4}>
+            <div className="text-center py-12 bg-gradient-to-r from-primary-50 to-accent-50 rounded-2xl">
+              <h2 className="text-3xl font-bold text-secondary-900 mb-4">
+                지금 시작해보세요
+              </h2>
+              <p className="text-lg text-secondary-600 mb-8 max-w-2xl mx-auto">
+                AI 모델 리뷰를 작성하고, 프롬프트 레시피를 공유하며, 
+                커뮤니티에 참여해보세요.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/register">
+                  <Button size="lg">
+                    무료로 시작하기
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="outline" size="lg">
+                    로그인
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </FadeIn>
+        )}
+      </div>
+    </Layout>
+  );
+}

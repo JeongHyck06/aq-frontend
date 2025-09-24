@@ -1,129 +1,103 @@
-'use client';
-
-import { Geist, Geist_Mono } from 'next/font/google';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import {
-    getBackendUrl,
-    getAccessToken,
-    getAuthHeaders,
-    clearTokens,
-} from '@/lib/api-config';
+import { Providers } from '@/components/providers/Providers';
+import { Toaster } from 'react-hot-toast';
 
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-});
+const inter = Inter({ subsets: ['latin'] });
 
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
-});
-
-interface UserInfo {
-    email: string;
-    nickname: string;
-}
+export const metadata: Metadata = {
+    title: 'AI 모델 비교 및 프롬프트 공유 플랫폼',
+    description:
+        'AI 모델 리뷰, 프롬프트 레시피 공유, 모델 비교 기능을 제공하는 플랫폼',
+    keywords: [
+        'AI',
+        '모델',
+        '프롬프트',
+        '리뷰',
+        '비교',
+        '공유',
+    ],
+    authors: [{ name: 'SKHU AQ Project Team' }],
+    creator: 'SKHU AQ Project Team',
+    publisher: 'SKHU AQ Project',
+    formatDetection: {
+        email: false,
+        address: false,
+        telephone: false,
+    },
+    metadataBase: new URL(
+        process.env.NEXT_PUBLIC_APP_URL ||
+            'http://localhost:3000'
+    ),
+    openGraph: {
+        type: 'website',
+        locale: 'ko_KR',
+        url: '/',
+        title: 'AI 모델 비교 및 프롬프트 공유 플랫폼',
+        description:
+            'AI 모델 리뷰, 프롬프트 레시피 공유, 모델 비교 기능을 제공하는 플랫폼',
+        siteName: 'AI 모델 비교 플랫폼',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'AI 모델 비교 및 프롬프트 공유 플랫폼',
+        description:
+            'AI 모델 리뷰, 프롬프트 레시피 공유, 모델 비교 기능을 제공하는 플랫폼',
+    },
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
+    verification: {
+        google: 'your-google-verification-code',
+    },
+};
 
 export default function RootLayout({
     children,
-}: Readonly<{
+}: {
     children: React.ReactNode;
-}>) {
-    const [userInfo, setUserInfo] =
-        useState<UserInfo | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchMyInfo = async () => {
-            const accessToken = getAccessToken();
-            if (!accessToken) {
-                setIsLoading(false);
-                return;
-            }
-
-            try {
-                const res = await fetch(
-                    `${getBackendUrl()}/auth/me`,
-                    {
-                        headers:
-                            getAuthHeaders(accessToken),
-                    }
-                );
-
-                if (res.ok) {
-                    const data = await res.json();
-                    setUserInfo(data);
-                } else {
-                    setUserInfo(null);
-                    clearTokens();
-                }
-            } catch (error) {
-                console.error('내 정보 조회 실패:', error);
-                setUserInfo(null);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchMyInfo();
-    }, []);
-
-    const handleLogout = () => {
-        clearTokens();
-        setUserInfo(null);
-        window.location.href = '/';
-    };
-
+}) {
     return (
-        <html lang="ko">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 text-gray-900 min-h-screen`}
-            >
-                <header className="bg-white border-b border-gray-200 shadow-sm">
-                    <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
-                        <Link
-                            href="/"
-                            className="text-2xl font-bold text-blue-600 hover:text-blue-700"
-                        >
-                            AQ
-                        </Link>
-
-                        <div>
-                            {isLoading ? (
-                                <div className="h-8 w-24 bg-gray-200 rounded animate-pulse"></div>
-                            ) : userInfo ? (
-                                <div className="flex items-center space-x-4">
-                                    <span className="font-medium text-gray-700">
-                                        👋{' '}
-                                        {userInfo.nickname}
-                                        님
-                                    </span>
-                                    <button
-                                        onClick={
-                                            handleLogout
-                                        }
-                                        className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors text-sm font-medium"
-                                    >
-                                        로그아웃
-                                    </button>
-                                </div>
-                            ) : (
-                                <Link
-                                    href="/login"
-                                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
-                                >
-                                    로그인
-                                </Link>
-                            )}
-                        </div>
-                    </nav>
-                </header>
-
-                <main className="container mx-auto px-6 py-8">
+        <html lang="ko" suppressHydrationWarning>
+            <body className={inter.className}>
+                <Providers>
                     {children}
-                </main>
+                    <Toaster
+                        position="top-right"
+                        toastOptions={{
+                            duration: 4000,
+                            style: {
+                                background: '#fff',
+                                color: '#374151',
+                                boxShadow:
+                                    '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+                                borderRadius: '0.5rem',
+                                border: '1px solid #e5e7eb',
+                            },
+                            success: {
+                                iconTheme: {
+                                    primary: '#10b981',
+                                    secondary: '#fff',
+                                },
+                            },
+                            error: {
+                                iconTheme: {
+                                    primary: '#ef4444',
+                                    secondary: '#fff',
+                                },
+                            },
+                        }}
+                    />
+                </Providers>
             </body>
         </html>
     );

@@ -1,14 +1,46 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-    env: {
-        NEXT_PUBLIC_BACKEND_URL:
-            process.env.NEXT_PUBLIC_BACKEND_URL ||
-            (process.env.NODE_ENV === 'production'
-                ? 'https://13.209.3.82:8443'
-                : 'http://localhost:8080'),
-        NEXT_PUBLIC_KAKAO_APP_KEY:
-            process.env.NEXT_PUBLIC_KAKAO_APP_KEY || '',
+    serverExternalPackages: ['mysql2'],
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '**',
+            },
+        ],
+    },
+    async headers() {
+        return [
+            {
+                source: '/api/:path*',
+                headers: [
+                    {
+                        key: 'Access-Control-Allow-Credentials',
+                        value: 'true',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Origin',
+                        value: '*',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Methods',
+                        value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+                    },
+                    {
+                        key: 'Access-Control-Allow-Headers',
+                        value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization',
+                    },
+                ],
+            },
+        ];
+    },
+    webpack: (config) => {
+        config.resolve.fallback = {
+            ...config.resolve.fallback,
+            fs: false,
+        };
+        return config;
     },
 };
 

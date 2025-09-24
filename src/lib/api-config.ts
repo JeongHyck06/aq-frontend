@@ -40,7 +40,7 @@ export function getBackendUrl(): string {
         return 'http://localhost:8080';
     } else {
         // 프로덕션 환경: Mixed Content 오류 방지를 위해 HTTPS 사용
-        return 'https://13.209.3.82:8443';
+        return 'https://aq-project.duckdns.org:8443';
     }
 }
 
