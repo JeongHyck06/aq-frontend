@@ -471,30 +471,18 @@ export default function EditReviewPage() {
                                 태그
                             </h2>
                             <div className="space-y-4">
-                                <div className="flex gap-2">
-                                    <Input
-                                        value={tagInput}
-                                        onChange={(e) =>
-                                            setTagInput(
-                                                e.target
-                                                    .value
-                                            )
-                                        }
-                                        onKeyPress={
-                                            handleKeyPress
-                                        }
-                                        placeholder="태그를 입력하고 Enter를 누르세요"
-                                    />
-                                    <Button
-                                        type="button"
-                                        onClick={
-                                            handleTagAdd
-                                        }
-                                        variant="outline"
-                                    >
-                                        추가
-                                    </Button>
-                                </div>
+                                <Input
+                                    value={tagInput}
+                                    onChange={(e) =>
+                                        setTagInput(
+                                            e.target.value
+                                        )
+                                    }
+                                    onKeyPress={
+                                        handleKeyPress
+                                    }
+                                    placeholder="태그를 입력하고 Enter를 누르세요"
+                                />
 
                                 {formData.tags &&
                                     formData.tags.length >
