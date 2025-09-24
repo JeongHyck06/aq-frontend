@@ -129,13 +129,13 @@ export const Header: React.FC = () => {
                                 <Button
                                     onClick={() =>
                                         router.push(
-                                            '/create'
+                                            '/reviews/create'
                                         )
                                     }
                                     className="hidden sm:flex items-center space-x-2 btn-modern btn-primary px-6 py-2.5"
                                 >
                                     <Plus className="h-4 w-4" />
-                                    <span>작성하기</span>
+                                    <span>리뷰 작성</span>
                                 </Button>
 
                                 {/* User Menu */}

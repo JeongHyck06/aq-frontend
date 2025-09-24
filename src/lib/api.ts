@@ -202,6 +202,70 @@ class ApiClient {
     isAuthenticated(): boolean {
         return !!this.getToken();
     }
+
+    // Review methods
+    async getReviews(page = 0, size = 20) {
+        return this.get(
+            `/api/reviews?page=${page}&size=${size}`
+        );
+    }
+
+    async getReview(reviewId: number) {
+        return this.get(`/api/reviews/${reviewId}`);
+    }
+
+    async createReview(reviewData: any) {
+        return this.post('/api/reviews', reviewData);
+    }
+
+    async updateReview(reviewId: number, reviewData: any) {
+        return this.put(
+            `/api/reviews/${reviewId}`,
+            reviewData
+        );
+    }
+
+    async deleteReview(reviewId: number) {
+        return this.delete(`/api/reviews/${reviewId}`);
+    }
+
+    async getReviewsByModel(
+        modelId: number,
+        page = 0,
+        size = 20
+    ) {
+        return this.get(
+            `/api/reviews/model/${modelId}?page=${page}&size=${size}`
+        );
+    }
+
+    async getReviewsByUser(
+        userId: number,
+        page = 0,
+        size = 20
+    ) {
+        return this.get(
+            `/api/reviews/user/${userId}?page=${page}&size=${size}`
+        );
+    }
+
+    async searchReviews(
+        keyword: string,
+        page = 0,
+        size = 20
+    ) {
+        return this.get(
+            `/api/reviews/search?keyword=${encodeURIComponent(
+                keyword
+            )}&page=${page}&size=${size}`
+        );
+    }
+
+    async getPopularReviews(page = 0, size = 20) {
+        return this.get(
+            `/api/reviews/popular?page=${page}&size=${size}`
+        );
+    }
 }
 
 export const apiClient = new ApiClient();

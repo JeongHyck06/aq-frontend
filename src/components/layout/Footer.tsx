@@ -57,7 +57,7 @@ export const Footer: React.FC = () => {
     ];
 
     return (
-        <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+        <footer className="bg-gray-50 border-t border-gray-200">
             <div className="container py-16">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
                     {/* Brand */}
@@ -80,7 +80,7 @@ export const Footer: React.FC = () => {
                                 </span>
                             </div>
                         </Link>
-                        <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md leading-relaxed">
+                        <p className="text-gray-600 mb-8 max-w-md leading-relaxed">
                             AI 모델 리뷰, 프롬프트 레시피
                             공유, 모델 비교 기능을 제공하는
                             <span className="font-semibold text-purple-600">
@@ -96,9 +96,9 @@ export const Footer: React.FC = () => {
                                     href={social.href}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300 hover:scale-110 hover:shadow-lg"
+                                    className="p-3 rounded-2xl bg-white border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 hover:scale-110 hover:shadow-lg"
                                 >
-                                    <social.icon className="h-5 w-5 text-gray-600 dark:text-gray-400 hover:text-purple-600 transition-colors" />
+                                    <social.icon className="h-5 w-5 text-gray-600 hover:text-purple-600 transition-colors" />
                                 </a>
                             ))}
                         </div>
@@ -106,7 +106,7 @@ export const Footer: React.FC = () => {
 
                     {/* Product */}
                     <div>
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white mb-6">
+                        <h3 className="text-base font-bold text-gray-900 mb-6">
                             제품
                         </h3>
                         <ul className="space-y-4">
@@ -115,7 +115,7 @@ export const Footer: React.FC = () => {
                                     <li key={link.name}>
                                         <Link
                                             href={link.href}
-                                            className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200 hover:translate-x-1 inline-block"
+                                            className="text-gray-600 hover:text-purple-600 transition-colors duration-200 hover:translate-x-1 inline-block"
                                         >
                                             {link.name}
                                         </Link>
@@ -127,7 +127,7 @@ export const Footer: React.FC = () => {
 
                     {/* Community */}
                     <div>
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white mb-6">
+                        <h3 className="text-base font-bold text-gray-900 mb-6">
                             커뮤니티
                         </h3>
                         <ul className="space-y-4">
@@ -136,7 +136,7 @@ export const Footer: React.FC = () => {
                                     <li key={link.name}>
                                         <Link
                                             href={link.href}
-                                            className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200 hover:translate-x-1 inline-block"
+                                            className="text-gray-600 hover:text-purple-600 transition-colors duration-200 hover:translate-x-1 inline-block"
                                         >
                                             {link.name}
                                         </Link>
@@ -148,7 +148,7 @@ export const Footer: React.FC = () => {
 
                     {/* Support */}
                     <div>
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white mb-6">
+                        <h3 className="text-base font-bold text-gray-900 mb-6">
                             지원
                         </h3>
                         <ul className="space-y-4">
@@ -157,7 +157,7 @@ export const Footer: React.FC = () => {
                                     <li key={link.name}>
                                         <Link
                                             href={link.href}
-                                            className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200 hover:translate-x-1 inline-block"
+                                            className="text-gray-600 hover:text-purple-600 transition-colors duration-200 hover:translate-x-1 inline-block"
                                         >
                                             {link.name}
                                         </Link>
@@ -169,7 +169,7 @@ export const Footer: React.FC = () => {
 
                     {/* Legal */}
                     <div>
-                        <h3 className="text-base font-bold text-gray-900 dark:text-white mb-6">
+                        <h3 className="text-base font-bold text-gray-900 mb-6">
                             법적 고지
                         </h3>
                         <ul className="space-y-4">
@@ -178,7 +178,7 @@ export const Footer: React.FC = () => {
                                     <li key={link.name}>
                                         <Link
                                             href={link.href}
-                                            className="text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200 hover:translate-x-1 inline-block"
+                                            className="text-gray-600 hover:text-purple-600 transition-colors duration-200 hover:translate-x-1 inline-block"
                                         >
                                             {link.name}
                                         </Link>
@@ -190,9 +190,9 @@ export const Footer: React.FC = () => {
                 </div>
 
                 {/* Bottom */}
-                <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-800">
+                <div className="mt-16 pt-8 border-t border-gray-200">
                     <div className="flex flex-col md:flex-row justify-between items-center">
-                        <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-gray-600">
                             <span className="flex items-center">
                                 © {currentYear} AI 모델 비교
                                 플랫폼. All rights reserved.
@@ -211,7 +211,7 @@ export const Footer: React.FC = () => {
                                 href="https://github.com"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-200 hover:scale-105"
+                                className="flex items-center space-x-2 text-sm text-gray-600 hover:text-purple-600 transition-colors duration-200 hover:scale-105"
                             >
                                 <Github className="h-4 w-4" />
                                 <span>GitHub</span>

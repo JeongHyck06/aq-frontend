@@ -69,28 +69,6 @@
         --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
     }
 
-    .dark {
-        --background: 240 10% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 240 10% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 240 10% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 262 83% 58%;
-        --primary-foreground: 0 0% 98%;
-        --secondary: 240 3.7% 15.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 240 3.7% 15.9%;
-        --muted-foreground: 240 5% 64.9%;
-        --accent: 240 3.7% 15.9%;
-        --accent-foreground: 0 0% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
-        --border: 240 3.7% 15.9%;
-        --input: 240 3.7% 15.9%;
-        --ring: 262 83% 58%;
-    }
-
     * {
         border-color: hsl(var(--border));
     }
@@ -193,7 +171,7 @@
 
     /* Modern card styles */
     .card-modern {
-        @apply bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-lg hover:shadow-xl transition-all duration-300;
+        @apply bg-white rounded-2xl border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300;
     }
 
     .card-hover {
@@ -214,11 +192,11 @@
     }
 
     .btn-secondary {
-        @apply bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700;
+        @apply bg-gray-100 text-gray-900 border border-gray-200 hover:bg-gray-200;
     }
 
     .btn-ghost {
-        @apply bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300;
+        @apply bg-transparent hover:bg-gray-100 text-gray-700;
     }
 
     /* Text gradients */
@@ -249,7 +227,7 @@
 
     /* Blur effects */
     .blur-bg {
-        @apply backdrop-blur-xl bg-white/80 dark:bg-gray-900/80;
+        @apply backdrop-blur-xl bg-white/80;
     }
 
     /* Animated backgrounds */
@@ -267,7 +245,7 @@
 
     /* Modern borders */
     .border-modern {
-        @apply border border-gray-200 dark:border-gray-800;
+        @apply border border-gray-200;
     }
 
     .border-gradient {
