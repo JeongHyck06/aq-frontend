@@ -177,14 +177,13 @@ export default function ReviewsPage() {
                                         handleSortChange
                                     }
                                     options={sortOptions}
-                                    className="w-32"
+                                    className="w-32 [&>div>button]:py-1.5 [&>div>button]:text-sm"
                                 />
                                 <Button
                                     variant="outline"
                                     size="sm"
                                 >
-                                    <Filter className="w-4 h-4 mr-2" />
-                                    필터
+                                    <Filter className="w-4 h-4" />
                                 </Button>
                             </div>
                         </div>
